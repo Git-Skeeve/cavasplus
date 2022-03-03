@@ -24,7 +24,7 @@ module_tcp(mandatory, 3, 30).
 % For each mandatory module, choose exactly 1
 :- module(mandatory, _, M),{choose(M)}!=1.
 
-% For each optional module, either it (1) or don't (0)
+% For each optional module, either choose it (1) or don't (0)
 :- module(optional, 1, M),2{choose(M)}.
 
 % Don't choose 3 (or more) bridge modules
