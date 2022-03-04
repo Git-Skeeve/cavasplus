@@ -17,7 +17,9 @@
 %module_tcp(mandatory, 3, 30).
 
 % ## Facts from SemaLogic - divided optional facts and their attribute 
-{symbol(bm1;bm2;bm3;am11;am12;am21;am22;am31;am32,fm1;fm2;fm3;pm1;pm2;pm3;iml;thesis)}.
+% Is it better to declare the attribute and this symbols in one line per symbol ? like symbol(bm1,(ects,9)). 
+% And how to declare more than one attribute ? symbol(bm1,(ects,9)(time, 30)). 	
+{symbol(bm1;bm2;bm3;am11;am12;am21;am22;am31;am32;fm1;fm2;fm3;pm1;pm2;pm3;im1;thesis)}.
 
 % ## Fact-Values e.g. as key-value from SemaLogic - because we dont know which attributes exist
 % It is possible to wirte it in a shorter way ?
@@ -39,6 +41,19 @@ attribute(pm3, ects, 12) :- symbol(pm3).
 attribute(im1, ects, 15) :- symbol(im1).
 attribute(thesis, ects, 30) :- symbol(thesis).
 
+
+% ## grouping facts for use in functions - is it possible, to do this shorter ?
+mgroup(optional_modules_group, am11).
+mgroup(optional_modules_group, am12).
+mgroup(optional_modules_group, am21).
+mgroup(optional_modules_group, am22).
+mgroup(optional_modules_group, am31).
+mgroup(optional_modules_group, am32).
+mgroup(optional_modules_group, fm1).
+mgroup(optional_modules_group, fm2).
+mgroup(optional_modules_group, fm3).
+
+module_function(optional_modules_group, ects, 24).
 
 
 % ### Rules 
@@ -64,14 +79,17 @@ attribute(thesis, ects, 30) :- symbol(thesis).
 % so we give the rule a name and cascade them on the basis of possible facts
 
 % Knowledge-Rules of SemaLogic
-mandatory_modules :- module(bm1), bm2, bm3.
-work_methods :- im1.
-project_seminars :- {pm1; pm2; pm3}.
-optional_modules :- 4{am11; am12; am21; am22; am31; am32; fm1; fm2; fm3}4.
-bridge_modules :- 0{fm1; fm2; fm3}2.
-thesis :- master_thesis, oral_exam, topic_thesis.
+mandatory_modules :- symbol(bm1);symbol(bm2);symbol(bm3).
+work_methods :- symbol(im1).
+project_seminars :- 2{symbol(pm1); symbol(pm2); symbol(pm3)}2.
+optional_modules :- {symbol(am11); symbol(am12); symbol(am21); symbol(am22); symbol(am31); symbol(am32); symbol(fm1); symbol(fm2); symbol(fm3)}.
+bridge_modules :- 0{symbol(fm1); symbol(fm2); symbol(fm3)}2.
 
-root :- mandatory_modules, work_methods,project_seminars, optional_modules, thesis,bridge_modules.
+root :- mandatory_modules, work_methods,project_seminars, optional_modules, symbol(thesis) ,bridge_modules.
+
+% Functions to reduce with sum - but doesn't work - please have a look !!!
+:- tcp != #sum{P,M: mgroup(G,M), attribute(M,A,P)}, module_function(G,A,TCP).
+
 
 % Kick-out all sets that doesn't fullfill root-rule
 :- not root.
