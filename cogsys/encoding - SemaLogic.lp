@@ -55,6 +55,20 @@ mgroup(optional_modules_group, fm3).
 
 module_function(optional_modules_group, ects, 24).
 
+mgroup(project_seminars_group, pm1).
+mgroup(project_seminars_group, pm2).
+mgroup(project_seminars_group, pm3).
+
+module_function(project_seminars_group, ects, 24).
+
+mgroup(mandatory_modules_group, bm1).
+mgroup(mandatory_modules_group, bm2).
+mgroup(mandatory_modules_group, bm3).
+
+module_function(mandatory_modules_group, ects, 27).
+
+
+
 
 % ### Rules 
 
@@ -81,14 +95,17 @@ module_function(optional_modules_group, ects, 24).
 % Knowledge-Rules of SemaLogic
 mandatory_modules :- symbol(bm1);symbol(bm2);symbol(bm3).
 work_methods :- symbol(im1).
-project_seminars :- 2{symbol(pm1); symbol(pm2); symbol(pm3)}2.
+project_seminars :- {symbol(pm1); symbol(pm2); symbol(pm3)}.
 optional_modules :- {symbol(am11); symbol(am12); symbol(am21); symbol(am22); symbol(am31); symbol(am32); symbol(fm1); symbol(fm2); symbol(fm3)}.
 bridge_modules :- 0{symbol(fm1); symbol(fm2); symbol(fm3)}2.
 
 root :- mandatory_modules, work_methods,project_seminars, optional_modules, symbol(thesis) ,bridge_modules.
 
-% Functions to reduce with sum - but doesn't work - please have a look !!!
-:- tcp != #sum{P,M: mgroup(G,M), attribute(M,A,P)}, module_function(G,A,TCP).
+% Functions to reduce with sum 
+:- ECTS != #sum{P,M: mgroup(G,M), attribute(M,A,P)}, module_function(G,A,ECTS).
+
+% then there could be possible an overall-rule for ECTS (or also as a group of the root-rule
+:- 120 != #sum{P,M: symbol(M), attribute(M,ects,P)}.
 
 
 % Kick-out all sets that doesn't fullfill root-rule
