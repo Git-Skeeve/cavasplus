@@ -104,6 +104,7 @@ root :- mandatory_modules, work_methods,project_seminars, optional_modules, symb
 % Functions to reduce with sum 
 :- ECTS != #sum{P,M: mgroup(G,M), attribute(M,A,P)}, module_function(G,A,ECTS).
 
+
 % then there could be possible an overall-rule for ECTS (or also as a group of the root-rule
 :- 120 != #sum{P,M: symbol(M), attribute(M,ects,P)}.
 
